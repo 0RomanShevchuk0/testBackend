@@ -16,7 +16,7 @@ const db = {
 }
 
 app.get("/", (req: Request, res: Response) => {
-  res.json("home")
+  res.json("Home")
 })
 app.get("/products", (req: Request, res: Response) => {
   const { title } = req.query
