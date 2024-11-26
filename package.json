@@ -6,12 +6,19 @@
   "scripts": {
     "devTs": "nodemon ./src/index.ts",
     "devJs": "nodemon ./dist/index.js",
+    "test": "jest",
     "watchTs": "tsc -w",
     "build": "tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "@types/jest": "^29.5.13",
+    "@types/supertest": "^6.0.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
