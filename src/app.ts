@@ -8,7 +8,7 @@ export const app = express()
 app.use(express.json())
 
 app.get("/", (req: Request, res: Response) => {
-  res.json("Home test")
+  res.json("Home")
 })
 
 const prosuctsRouter = getProductsRoutes(db)
