@@ -1,3 +1,3 @@
 export type QueryProductsModel = {
-  title: string
+  title?: string
 }

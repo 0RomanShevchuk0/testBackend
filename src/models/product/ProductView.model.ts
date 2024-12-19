@@ -1,4 +1,5 @@
 export type ProductViewModel = {
-	id: number
+	id: string
   title: string
+	price: number
 }

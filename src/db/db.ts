@@ -1,16 +1,21 @@
-export type ProductType = {
-  id: number
-  title: string
-  price: number
-}
-export type DBType = { products: ProductType[] }
+import { MongoClient } from "mongodb"
 
-export const db: DBType = {
-  products: [
-    { id: 1, title: "Wireless Bluetooth Headphones", price: 10 },
-    { id: 2, title: "Portable Power Bank", price: 10 },
-    { id: 3, title: "Wireless Mouse", price: 10 },
-    { id: 4, title: "USB-C Charging Cable", price: 10 },
-    { id: 5, title: "Laptop Stand", price: 10 },
-  ],
+import { env } from "../config/env"
+
+const mongoUri = env.MONGO_URI
+
+const client = new MongoClient(mongoUri)
+export const database = client.db(env.DB_NAME)
+
+export const connectToDatabase = async () => {
+  try {
+    // Connect the client to the server
+    await client.connect()
+    // Establish and verufy connection
+    await client.db(env.DB_NAME).command({ ping: 1 })
+    console.log(`Connected successfully to the database: ${database.databaseName}`)
+  } catch (error) {
+    console.log(`Can't connect to database: ${database.databaseName}`)
+    await client.close()
+  }
 }

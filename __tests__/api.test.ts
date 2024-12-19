@@ -3,6 +3,7 @@ import { CreateProductModel } from "../src/models/CreateProductModel"
 import { UpdateProductModel } from "../src/models/UpdateProductModel"
 import { HTTP_STATUSES } from "../src/constants/httpStatuses"
 import { app } from "../src/app"
+import { ProductViewModel } from "../src/models/ProductViewModel"
 
 describe("products api", () => {
   beforeAll(async () => {
@@ -18,7 +19,7 @@ describe("products api", () => {
   })
 
   it("shouldn't create product with incorrect input data", async () => {
-    const data: CreateProductModel = { title: "" }
+    const data: CreateProductModel = { title: "", price: 10 }
 
     await request(app).post("/products").send(data).expect(HTTP_STATUSES.BAD_REQUEST_400)
     await request(app).get("/products").expect([])
@@ -26,7 +27,7 @@ describe("products api", () => {
 
   let createdProduct: any = null
   it("should create product with correct input data", async () => {
-    const data: CreateProductModel = { title: "test product" }
+    const data: CreateProductModel = { title: "test product", price: 10 }
 
     const response = await request(app)
       .post("/products")
@@ -35,16 +36,18 @@ describe("products api", () => {
 
     createdProduct = response.body
 
-    expect(createdProduct).toEqual({
+    const expectedProduct: ProductViewModel = {
       id: expect.any(Number),
       title: data.title,
-    })
+      price: data.price,
+    }
+    expect(createdProduct).toEqual(expectedProduct)
 
     await request(app).get("/products").expect([createdProduct])
   })
 
   it("shoudn't update product with incorrect data", async () => {
-    const data: UpdateProductModel = { title: "" }
+    const data: UpdateProductModel = { title: "", price: 10 }
 
     await request(app)
       .patch(`/products/${createdProduct.id}`)
@@ -56,20 +59,20 @@ describe("products api", () => {
   })
 
   it("shoudn't update product that doesn't exist", async () => {
-    const data: UpdateProductModel = { title: "test title" }
+    const data: UpdateProductModel = { title: "test title", price: 10 }
 
     await request(app).patch(`/products/-1`).send(data).expect(HTTP_STATUSES.NOT_FOUND_404)
   })
 
   it("shoud update product with correct data", async () => {
-    const data: UpdateProductModel = { title: "good title" }
+    const data: UpdateProductModel = { title: "good title", price: 50 }
 
     await request(app)
       .patch(`/products/${createdProduct.id}`)
       .send(data)
       .expect(HTTP_STATUSES.OK_200, {
         ...createdProduct,
-        title: data.title,
+        ...data,
       })
   })
 
@@ -78,7 +81,7 @@ describe("products api", () => {
   })
 
   it("should delete product", async () => {
-    await request(app).delete(`/products/${createdProduct.id}`).expect(HTTP_STATUSES.OK_200)
+    await request(app).delete(`/products/${createdProduct.id}`).expect(HTTP_STATUSES.NO_CONTENT_204)
     await request(app).get(`/products/${createdProduct.id}`).expect(HTTP_STATUSES.NOT_FOUND_404)
   })
 })

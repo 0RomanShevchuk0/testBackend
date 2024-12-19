@@ -1,18 +1,14 @@
 import express, { Request, Response } from "express"
-import { getProductsRoutes } from "./routes/products"
-import { db } from "./db/db"
-import { getTestsRoutes } from "./routes/tests"
+import { productsRouter } from "./routes/products-router"
+import { testsRouter } from "./routes/tests-router"
 
 export const app = express()
 
 app.use(express.json())
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", async (req: Request, res: Response) => {
   res.json("Home")
 })
 
-const prosuctsRouter = getProductsRoutes(db)
-const testsRouter = getTestsRoutes(db)
-
-app.use("/products", prosuctsRouter)
+app.use("/products", productsRouter)
 app.use("/__test__", testsRouter)

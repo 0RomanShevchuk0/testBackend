@@ -1,10 +1,15 @@
-import dotenv from "dotenv"
 import { app } from "./app"
+import { env } from "./config/env"
+import { connectToDatabase } from "./db/db"
 
-dotenv.config()
+const port = env.PORT
 
-const port = process.env.PORT || 3000
+const startApp = async () => {
+  await connectToDatabase()
 
-app.listen(port, () => {
-  console.log(`App listening port ${port}`)
-})
+  app.listen(port, () => {
+    console.log(`App listening port ${port}`)
+  })
+}
+
+startApp()
