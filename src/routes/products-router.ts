@@ -1,20 +1,20 @@
 import { HTTP_STATUSES } from "./../constants/httpStatuses"
-import { productsRepository } from "./../repositories/products-repository"
 import { Response, Router } from "express"
 import { ProductViewModel } from "../models/product/ProductView.model"
 import { QueryProductsModel } from "../models/product/QueryProducts.model"
+import { URIParamProductIdModel } from "../models/product/URIParamProductId.model"
+import { CreateProductModel } from "../models/product/CreateProduct.model"
+import { UpdateProductModel } from "../models/product/UpdateProduct.model"
 import {
   RequestWithBody,
   RequestWithParams,
   RequestWithParamsAndBody,
   RequestWithQuery,
 } from "../types/request.types"
-import { URIParamProductIdModel } from "../models/product/URIParamProductId.model"
-import { CreateProductModel } from "../models/product/CreateProduct.model"
-import { UpdateProductModel } from "../models/product/UpdateProduct.model"
 import { body, Result, ValidationError, checkExact } from "express-validator"
 import { inputValidationMiddlevare } from "../middlewares/input-validation-middlevare"
 import { ProductType } from "../types/product.type"
+import { productsService } from "../domain/products.service"
 
 const getProductViewModel = (dbProduct: ProductType): ProductViewModel => {
   return {
@@ -42,7 +42,7 @@ productsRouter.get(
     const { title } = req.query
 
     try {
-      const filteredProducts = await productsRepository.findProducts(title)
+      const filteredProducts = await productsService.findProducts(title)
       res.json(filteredProducts.map(getProductViewModel))
     } catch (error) {
       res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
@@ -56,7 +56,7 @@ productsRouter.get(
     const productId = req.params.id
 
     try {
-      const foundProduct = await productsRepository.findProductById(productId)
+      const foundProduct = await productsService.findProductById(productId)
       if (!foundProduct) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
@@ -77,7 +77,7 @@ productsRouter.post(
     res: Response<CreateProductModel | Result<ValidationError>>
   ) => {
     try {
-      const createdProduct = await productsRepository.createProduct(req.body)
+      const createdProduct = await productsService.createProduct(req.body)
 
       res.status(HTTP_STATUSES.CREATED_201).json(getProductViewModel(createdProduct))
     } catch (error) {
@@ -96,7 +96,7 @@ productsRouter.patch(
   ) => {
     const productId = req.params.id
     try {
-      const updatedProduct = await productsRepository.updateProduct(productId, req.body)
+      const updatedProduct = await productsService.updateProduct(productId, req.body)
 
       if (!updatedProduct) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -115,7 +115,7 @@ productsRouter.delete(
   async (req: RequestWithParams<URIParamProductIdModel>, res: Response) => {
     const productId = req.params.id
     try {
-      const isDeleted = await productsRepository.deleteProduct(productId)
+      const isDeleted = await productsService.deleteProduct(productId)
       const resultStatus = isDeleted ? HTTP_STATUSES.NO_CONTENT_204 : HTTP_STATUSES.NOT_FOUND_404
 
       res.sendStatus(resultStatus)

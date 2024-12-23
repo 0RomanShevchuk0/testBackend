@@ -1,9 +1,9 @@
 import request from "supertest"
-import { CreateProductModel } from "../src/models/CreateProductModel"
-import { UpdateProductModel } from "../src/models/UpdateProductModel"
 import { HTTP_STATUSES } from "../src/constants/httpStatuses"
 import { app } from "../src/app"
-import { ProductViewModel } from "../src/models/ProductViewModel"
+import { ProductViewModel } from "../src/models/product/ProductView.model"
+import { CreateProductModel } from "../src/models/product/CreateProduct.model"
+import { UpdateProductModel } from "../src/models/product/UpdateProduct.model"
 
 describe("products api", () => {
   beforeAll(async () => {

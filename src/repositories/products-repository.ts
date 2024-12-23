@@ -1,9 +1,7 @@
 import { UpdateProductModel } from "../models/product/UpdateProduct.model"
-import { CreateProductModel } from "../models/product/CreateProduct.model"
 import { getCollection } from "../db/db.utils"
 import { Filter } from "mongodb"
 import { ProductType } from "../types/product.type"
-import { v4 as uuidv4 } from "uuid"
 
 const productsCollection = getCollection<ProductType>("products")
 
@@ -22,15 +20,9 @@ export const productsRepository = {
     return productsCollection.findOne({ id })
   },
 
-  async createProduct(newProduct: CreateProductModel): Promise<ProductType> {
-    const createdProduct: ProductType = {
-      id: uuidv4(),
-      title: newProduct.title,
-      price: newProduct.price,
-    }
-
-    const result = await productsCollection.insertOne(createdProduct)
-    return createdProduct
+  async createProduct(newProduct: ProductType): Promise<ProductType> {
+    const result = await productsCollection.insertOne(newProduct)
+    return newProduct
   },
 
   async updateProduct(
