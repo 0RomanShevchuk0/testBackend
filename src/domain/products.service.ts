@@ -8,7 +8,6 @@ import { productsRepository } from "../repositories/products-repository"
 
 export const productsService = {
   async findProducts(params: QueryProductsModel): Promise<PaginationResponseType<ProductType>> {
-		
     return productsRepository.findProducts(params)
   },
 

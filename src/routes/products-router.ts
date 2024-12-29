@@ -44,15 +44,15 @@ productsRouter.get(
     res: Response<PaginationResponseType<ProductViewModel>>
   ) => {
     try {
-      // refactor
-      const filteredProducts = await productsService.findProducts(req.query)
+      const { hasNextPage, hasPreviousPage, items, page, pageSize, totalCount } =
+        await productsService.findProducts(req.query)
       const result: PaginationResponseType<ProductViewModel> = {
-        page: filteredProducts.page,
-        pageSize: filteredProducts.pageSize,
-        totalCount: filteredProducts.totalCount,
-        hasNextPage: filteredProducts.hasNextPage,
-        hasPreviousPage: filteredProducts.hasPreviousPage,
-        items: filteredProducts.items.map(getProductViewModel),
+        hasNextPage,
+        hasPreviousPage,
+        page,
+        pageSize,
+        totalCount,
+        items: items.map(getProductViewModel),
       }
       res.json(result)
     } catch (error) {
