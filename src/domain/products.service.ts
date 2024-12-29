@@ -1,3 +1,5 @@
+import { PaginationResponseType } from "./../types/pagination"
+import { QueryProductsModel } from "./../models/product/QueryProducts.model"
 import { UpdateProductModel } from "../models/product/UpdateProduct.model"
 import { CreateProductModel } from "../models/product/CreateProduct.model"
 import { ProductType } from "../types/product.type"
@@ -5,8 +7,9 @@ import { v4 as uuidv4 } from "uuid"
 import { productsRepository } from "../repositories/products-repository"
 
 export const productsService = {
-  async findProducts(title?: string): Promise<ProductType[]> {
-    return productsRepository.findProducts(title)
+  async findProducts(params: QueryProductsModel): Promise<PaginationResponseType<ProductType>> {
+		
+    return productsRepository.findProducts(params)
   },
 
   async findProductById(id: string): Promise<ProductType | null> {
