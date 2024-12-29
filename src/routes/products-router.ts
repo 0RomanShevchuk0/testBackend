@@ -15,8 +15,9 @@ import { body, Result, ValidationError, checkExact } from "express-validator"
 import { inputValidationMiddlevare } from "../middlewares/input-validation-middlevare"
 import { ProductType } from "../types/product.type"
 import { productsService } from "../domain/products.service"
+import { PaginationResponseType } from "../types/pagination"
 
-const getProductViewModel = (dbProduct: ProductType): ProductViewModel => {
+export const getProductViewModel = (dbProduct: ProductType): ProductViewModel => {
   return {
     id: dbProduct.id,
     title: dbProduct.title,
@@ -38,12 +39,22 @@ export const productsRouter = Router()
 
 productsRouter.get(
   "/",
-  async (req: RequestWithQuery<QueryProductsModel>, res: Response<ProductViewModel[]>) => {
-    const { title } = req.query
-
+  async (
+    req: RequestWithQuery<QueryProductsModel>,
+    res: Response<PaginationResponseType<ProductViewModel>>
+  ) => {
     try {
-      const filteredProducts = await productsService.findProducts(title)
-      res.json(filteredProducts.map(getProductViewModel))
+      const { hasNextPage, hasPreviousPage, items, page, pageSize, totalCount } =
+        await productsService.findProducts(req.query)
+      const result: PaginationResponseType<ProductViewModel> = {
+        hasNextPage,
+        hasPreviousPage,
+        page,
+        pageSize,
+        totalCount,
+        items: items.map(getProductViewModel),
+      }
+      res.json(result)
     } catch (error) {
       res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
     }
